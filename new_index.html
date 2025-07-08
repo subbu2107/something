@@ -36,6 +36,7 @@
 
         .tabcontent {
             display: none;
+            margin-bottom: 30px;
         }
 
         table {
@@ -67,53 +68,44 @@
     <button class="tablinks" onclick="openTab(event, 'Vegetables')">Vegetables</button>
 </div>
 
-<!-- Fruits Transposed -->
+<!-- Fruits -->
 <div id="Fruits" class="tabcontent" style="display: block;">
+    {% for _ in range(2) %}
     <table>
-        <tr>
-            <th>Field</th>
-            {% for fruit in fruits %}
-                <th>{{ fruit.name }}</th>
-            {% endfor %}
-        </tr>
+        <tr><th>Field</th>{% for fruit in fruits %}<th>{{ fruit.name }}</th>{% endfor %}</tr>
         <tr><td>Color</td>{% for fruit in fruits %}<td>{{ fruit.color }}</td>{% endfor %}</tr>
         <tr><td>Quantity</td>{% for fruit in fruits %}<td>{{ fruit.quantity }}</td>{% endfor %}</tr>
         <tr><td>Selled</td>{% for fruit in fruits %}<td>{{ fruit.selled }}</td>{% endfor %}</tr>
         <tr><td>Remaining</td>{% for fruit in fruits %}<td>{{ fruit.remaining }}</td>{% endfor %}</tr>
     </table>
+    {% endfor %}
 </div>
 
-<!-- Toys Transposed -->
+<!-- Toys -->
 <div id="Toys" class="tabcontent">
+    {% for _ in range(2) %}
     <table>
-        <tr>
-            <th>Field</th>
-            {% for toy in toys %}
-                <th>{{ toy.name }}</th>
-            {% endfor %}
-        </tr>
+        <tr><th>Field</th>{% for toy in toys %}<th>{{ toy.name }}</th>{% endfor %}</tr>
         <tr><td>Type</td>{% for toy in toys %}<td>{{ toy.type }}</td>{% endfor %}</tr>
         <tr><td>Price</td>{% for toy in toys %}<td>{{ toy.price }}</td>{% endfor %}</tr>
         <tr><td>Quantity</td>{% for toy in toys %}<td>{{ toy.quantity }}</td>{% endfor %}</tr>
         <tr><td>Selled</td>{% for toy in toys %}<td>{{ toy.selled }}</td>{% endfor %}</tr>
         <tr><td>Remaining</td>{% for toy in toys %}<td>{{ toy.remaining }}</td>{% endfor %}</tr>
     </table>
+    {% endfor %}
 </div>
 
-<!-- Vegetables Transposed -->
+<!-- Vegetables -->
 <div id="Vegetables" class="tabcontent">
+    {% for _ in range(2) %}
     <table>
-        <tr>
-            <th>Field</th>
-            {% for veg in vegetables %}
-                <th>{{ veg.name }}</th>
-            {% endfor %}
-        </tr>
+        <tr><th>Field</th>{% for veg in vegetables %}<th>{{ veg.name }}</th>{% endfor %}</tr>
         <tr><td>Category</td>{% for veg in vegetables %}<td>{{ veg.category }}</td>{% endfor %}</tr>
         <tr><td>Stock</td>{% for veg in vegetables %}<td>{{ veg.stock }}</td>{% endfor %}</tr>
         <tr><td>Selled</td>{% for veg in vegetables %}<td>{{ veg.selled }}</td>{% endfor %}</tr>
         <tr><td>Remaining</td>{% for veg in vegetables %}<td>{{ veg.remaining }}</td>{% endfor %}</tr>
     </table>
+    {% endfor %}
 </div>
 
 <script>
