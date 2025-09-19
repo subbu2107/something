@@ -3,26 +3,69 @@
 <head>
     <title>Inventory Dashboard</title>
     <style>
-        body { font-family: Arial; padding: 20px; background-color: #f2f2f2; }
-        .tab { overflow: hidden; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
-        .tab button { background-color: #ddd; float: left; border: none; outline: none;
-                      cursor: pointer; padding: 10px 20px; font-size: 16px; }
-        .tab button:hover { background-color: #bbb; }
-        .tab button.active { background-color: #444; color: white; }
-        .tabcontent { display: none; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 30px; }
-        th, td { border: 1px solid #aaa; padding: 10px; text-align: center; }
-        th { background-color: #444; color: white; }
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        .tab {
+            overflow: hidden;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .tab button {
+            background-color: #ddd;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .tab button:hover {
+            background-color: #bbb;
+        }
+
+        .tab button.active {
+            background-color: #444;
+            color: white;
+        }
+
+        .tabcontent {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #444;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
-<h1>Lazy Loaded Inventory Tables (One Route)</h1>
+<h1>Transposed Inventory Tables</h1>
 
 <div class="tab">
-    <button class="tablinks active" onclick="openTab(event, 'Fruits', 'fruits')">Fruits</button>
-    <button class="tablinks" onclick="openTab(event, 'Toys', 'toys')">Toys</button>
-    <button class="tablinks" onclick="openTab(event, 'Vegetables', 'vegetables')">Vegetables</button>
+    <button class="tablinks active" onclick="openTab(event, 'Fruits')">Fruits</button>
+    <button class="tablinks" onclick="openTab(event, 'Toys')">Toys</button>
+    <button class="tablinks" onclick="openTab(event, 'Vegetables')">Vegetables</button>
 </div>
 
 <div id="Fruits" class="tabcontent" style="display: block;"></div>
@@ -30,7 +73,41 @@
 <div id="Vegetables" class="tabcontent"></div>
 
 <script>
-async function openTab(evt, tabName, type) {
+async function loadData(type) {
+    const res = await fetch("/" + type.toLowerCase());
+    const data = await res.json();
+
+    let html = "<table><tr><th>Field</th>";
+    data.forEach(item => html += `<th>${item.name}</th>`);
+    html += "</tr>";
+
+    if (type === "Fruits") {
+        html += "<tr><td>Color</td>" + data.map(i=>`<td>${i.color}</td>`).join("") + "</tr>";
+        html += "<tr><td>Quantity</td>" + data.map(i=>`<td>${i.quantity}</td>`).join("") + "</tr>";
+        html += "<tr><td>Selled</td>" + data.map(i=>`<td>${i.selled}</td>`).join("") + "</tr>";
+        html += "<tr><td>Remaining</td>" + data.map(i=>`<td>${i.remaining}</td>`).join("") + "</tr>";
+    }
+
+    if (type === "Toys") {
+        html += "<tr><td>Type</td>" + data.map(i=>`<td>${i.type}</td>`).join("") + "</tr>";
+        html += "<tr><td>Price</td>" + data.map(i=>`<td>${i.price}</td>`).join("") + "</tr>";
+        html += "<tr><td>Quantity</td>" + data.map(i=>`<td>${i.quantity}</td>`).join("") + "</tr>";
+        html += "<tr><td>Selled</td>" + data.map(i=>`<td>${i.selled}</td>`).join("") + "</tr>";
+        html += "<tr><td>Remaining</td>" + data.map(i=>`<td>${i.remaining}</td>`).join("") + "</tr>";
+    }
+
+    if (type === "Vegetables") {
+        html += "<tr><td>Category</td>" + data.map(i=>`<td>${i.category}</td>`).join("") + "</tr>";
+        html += "<tr><td>Stock</td>" + data.map(i=>`<td>${i.stock}</td>`).join("") + "</tr>";
+        html += "<tr><td>Selled</td>" + data.map(i=>`<td>${i.selled}</td>`).join("") + "</tr>";
+        html += "<tr><td>Remaining</td>" + data.map(i=>`<td>${i.remaining}</td>`).join("") + "</tr>";
+    }
+
+    html += "</table>";
+    document.getElementById(type).innerHTML = html;
+}
+
+function openTab(evt, tabName) {
     const tabcontent = document.getElementsByClassName("tabcontent");
     const tablinks = document.getElementsByClassName("tablinks");
 
@@ -44,45 +121,14 @@ async function openTab(evt, tabName, type) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.classList.add("active");
 
-    const container = document.getElementById(tabName);
-    if (!container.hasChildNodes()) {
-        const res = await fetch(`/?type=${type}`);
-        const data = await res.json();
-        container.innerHTML = createTable(tabName, data);
+    // load data only if not already loaded
+    if (document.getElementById(tabName).innerHTML.trim() === "") {
+        loadData(tabName);
     }
 }
 
-function createTable(type, data) {
-    let html = "<table><tr><th>Field</th>";
-    data.forEach(item => html += `<th>${item.name}</th>`);
-    html += "</tr>";
-
-    if (type === "Fruits") {
-        html += "<tr><td>Color</td>" + data.map(i => `<td>${i.color}</td>`).join("") + "</tr>";
-        html += "<tr><td>Quantity</td>" + data.map(i => `<td>${i.quantity}</td>`).join("") + "</tr>";
-        html += "<tr><td>Selled</td>" + data.map(i => `<td>${i.selled}</td>`).join("") + "</tr>";
-        html += "<tr><td>Remaining</td>" + data.map(i => `<td>${i.remaining}</td>`).join("") + "</tr>";
-    }
-    else if (type === "Toys") {
-        html += "<tr><td>Type</td>" + data.map(i => `<td>${i.type}</td>`).join("") + "</tr>";
-        html += "<tr><td>Price</td>" + data.map(i => `<td>${i.price}</td>`).join("") + "</tr>";
-        html += "<tr><td>Quantity</td>" + data.map(i => `<td>${i.quantity}</td>`).join("") + "</tr>";
-        html += "<tr><td>Selled</td>" + data.map(i => `<td>${i.selled}</td>`).join("") + "</tr>";
-        html += "<tr><td>Remaining</td>" + data.map(i => `<td>${i.remaining}</td>`).join("") + "</tr>";
-    }
-    else if (type === "Vegetables") {
-        html += "<tr><td>Category</td>" + data.map(i => `<td>${i.category}</td>`).join("") + "</tr>";
-        html += "<tr><td>Stock</td>" + data.map(i => `<td>${i.stock}</td>`).join("") + "</tr>";
-        html += "<tr><td>Selled</td>" + data.map(i => `<td>${i.selled}</td>`).join("") + "</tr>";
-        html += "<tr><td>Remaining</td>" + data.map(i => `<td>${i.remaining}</td>`).join("") + "</tr>";
-    }
-
-    html += "</table>";
-    return html;
-}
-
-// Load Fruits first by default
-openTab({ currentTarget: document.querySelector(".tablinks.active") }, "Fruits", "fruits");
+// auto-load Fruits on first load
+window.onload = () => loadData("Fruits");
 </script>
 
 </body>
